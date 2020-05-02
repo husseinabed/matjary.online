@@ -8,7 +8,7 @@ export default {
         autoHeight: false,
         x: 'center',
         y: 'top',
-        timeout: 5000,
+        timeout: 6000,
         mode: 'multi-line',
         color: 'error'
     },
@@ -49,6 +49,8 @@ export default {
             commit('value', true)
         },
         close ({ commit }) {
+            console.log('closed');
+            
             commit('value', false)
             commit('text', '')
             commit('color', 'error')

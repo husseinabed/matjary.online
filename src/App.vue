@@ -5,10 +5,9 @@
   <v-navigation-drawer  v-bind="cart.bind" v-on="cart.on" ><cart-content></cart-content></v-navigation-drawer>
   <ToolbarContent v-if="!$route.meta.login" />
  
-  <v-content :class="{'secondary': $route.meta.login}" >
-    <v-container fluid dar fill-height class="pa-0"> 
+  <v-content class="grey lighten-3" >
       <router-view></router-view>
-    </v-container>
+ 
   </v-content>
   <BottomSheet />
   <v-dialog  v-bind="dialog.bind" v-on="dialog.on">
@@ -79,18 +78,13 @@ export default {
   },
   methods: {
     ...mapMutations({
-       setUser: 'io/auth/user', setToken: 'io/auth/token' }), 
+       setError: 'io/error'
+    }), 
     ...mapActions( {
-      feed: 'products/feed',
       snackbarOpen: 'snackbar/open', 
       snackbarClose: 'snackbar/close', 
       logout: 'io/auth/logout' }),
-    checkLocalStorage () {
-        if (localStorage.getItem('token'))
-          this.setToken(localStorage.getItem('token'))
-        if (localStorage.getItem('user'))
-          this.setUser(JSON.parse(localStorage.getItem('user')))
-    },
+
     handelSocketError (err) {
       if (err) {
         this.handelError(err)
@@ -104,14 +98,14 @@ export default {
           } else {
               this.snackbarOpen([err, 'error'])
           }
+          // reset error to show snakebar at the same error 
+          setTimeout(()=> {
+            this.setError('')
+          }, this.snackbar.timeout)
         }
       
         
     },
-  },
- 
-  created () {
-    this.checkLocalStorage()
   }
 }
 </script>

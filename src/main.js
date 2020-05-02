@@ -9,6 +9,8 @@ import { Plugin } from 'vue-fragment'
 Vue.use(Plugin)
 Vue.config.productionTip = false
 
+import 'leaflet/dist/leaflet.css';
+
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiersAuth)) {
     

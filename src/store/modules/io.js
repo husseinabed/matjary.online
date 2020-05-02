@@ -247,6 +247,45 @@ export default {
                       root: true
                     })
                 },
+                async getVendorProducts({ dispatch, commit, rootState }, payload) {
+                    if (!payload) return commit('io/error', 'no payload has been supplied to io/api/getVendorProducts action', {
+                        root: true
+                    })
+                    const id = typeof payload == 'string' ? payload : payload.vendor_id
+                    if (!id) return commit('io/error', 'no vendor_id has been supplied to io/api/getVendorProducts action', {
+                        root: true
+                    })
+                    // const user_id = rootState.io.auth.user ? rootState.io.auth.user.id : null
+                    return await dispatch('io/get', 'https://matjary.online/wp-json/wcfmmp/v1/products/?id=' + id, {
+                        root: true
+                    })
+                },
+                async sendEnquery({ commit, dispatch, rootState  }, payload) {
+                    const oauth = initOAuth()
+                    console.log(payload)
+                    const { vendor, message, product } = payload
+                    if (vendor === undefined || message === undefined) return commit('io/error', 'one of this args "vendor || message" is missing in io/api/sendEnquery action', {
+                        root: true
+                    })
+                    // get curent user
+                    const request_data = {
+                      url: 'https://matjary.online/wp-json/wcfmmp/v1/customer-enquiry/',
+                      method: 'GET',
+                      data:{
+                        vendor_id: vendor,
+                        product_id: product,
+                        enquiry: message
+                      }
+                    }
+                    return await dispatch('io/get', {
+                          url: request_data.url + '?' + JsonToparam(request_data.data),
+                          options:{
+                              headers: oauth.toHeader(oauth.authorize(request_data, rootState.io.auth.token))
+                          }
+                        }, {
+                      root: true
+                    })
+                },
                 async followVendor({ commit, dispatch, rootState  }, payload) {
                     const oauth = initOAuth()
 
